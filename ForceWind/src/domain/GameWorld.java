@@ -19,7 +19,7 @@ public class GameWorld {
         loadTiles(props.getProperty("tiles_path", "/rsc/tiles.xml"));
     }
     
-    public GameWorld( ArrayList tiles ) throws IllegalArgumentException {
+    public GameWorld( ArrayList<ArrayList<Tile>> tiles ) throws IllegalArgumentException {
         if (tiles == null || tiles.isEmpty()){
             throw new IllegalArgumentException("Tiles list can't be empty/NULL.");
         } else {
@@ -31,10 +31,20 @@ public class GameWorld {
         this.tiles = GameLoader.loadTiles(path);
     }
     
-    public GameWorld getPortion(int x, int y, int width, int height){
+    public GameWorld getPortion(int x, int y, int width, int height)throws IndexOutOfBoundsException {
         GameWorld result = null;
+        ArrayList<ArrayList<Tile>> temp = null;
         
+        int xmax = tiles.size();
+        int ymax = tiles.get(0).size();
         
+        if (x < 0 || y < 0 || x+width > xmax || y+height > ymax){
+            throw new IndexOutOfBoundsException("WorldPortion out of index.");
+        } else {
+            for (int i=0; i < height; i++){
+                temp.set(i, (ArrayList)tiles.get(i+x).subList(y, y+height)); //Nasty casting!
+            }
+        }
         
         return result;
     }
