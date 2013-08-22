@@ -10,22 +10,20 @@ import utils.GameProps;
  *
  * @author Nindustries
  */
-public class Tile implements Meshable {
-    private final String imgPath;
+public abstract class GameObject implements Meshable {
     
-    private Point position;
-    private BufferedImage mesh;
+    public final String imgPath;
     
-    private boolean walkable = false;
+    private boolean stackable = false; //Also means stackable on the ground
+    private Point position = null;
     
+    private BufferedImage mesh = null;
     
-    public Tile( Point pos, boolean walkable ) throws IOException {
+    public GameObject() throws IOException{
         GameProps props = new GameProps();
         imgPath = props.getProperty("mesh_path", "/rsc.mesh/");
-        
-        setPosition(pos);
-        setWalkable(walkable);
     }
+    
     
     @Override
     public void setMesh(BufferedImage img) throws IllegalArgumentException {
@@ -39,26 +37,6 @@ public class Tile implements Meshable {
     @Override
     public void setMesh(String img) throws IOException {
         setMesh(ImageIO.read(this.getClass().getResource(imgPath + img)));
-    }
-    
-    protected void setWalkable( boolean w ){
-        this.walkable = w;
-    }
-    
-    protected void setPosition( Point p) throws IllegalArgumentException {
-        if (p == null){
-            throw new IllegalArgumentException("Point for Tile can't be NULL.");
-        } else {
-            this.position = p;
-        }
-    }
-    
-    public boolean getWalkable(){
-        return this.walkable;
-    }
-    
-    public Point getPosition(){
-        return this.position;
     }
     
     @Override
