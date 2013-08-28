@@ -1,7 +1,6 @@
 package domain;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 /**
  *
@@ -10,7 +9,7 @@ import java.io.IOException;
 public interface Meshable {
 
     void setMesh(BufferedImage img) throws IllegalArgumentException;
-    void setMesh(String img) throws IOException;
+    void setMesh(String img) throws Exception;
     BufferedImage getMesh();
     
     

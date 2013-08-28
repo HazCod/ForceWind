@@ -1,15 +1,12 @@
 package utils;
 
+import domain.Coordinate;
 import domain.Tile;
-import java.awt.Point;
-import java.io.IOException;
-import java.util.ArrayList;
+import domain.TileList;
 import java.util.List;
 import java.util.ListIterator;
-import javax.xml.parsers.ParserConfigurationException;
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 /**
@@ -18,36 +15,37 @@ import org.jdom2.input.SAXBuilder;
  */
 public class GameLoader {
     
-    public static ArrayList<ArrayList<Tile>> loadTiles( String file ) throws ParserConfigurationException, JDOMException, IOException, Exception{
-        ArrayList<ArrayList<Tile>> result = null;
+    public static TileList loadTiles( String file ) throws Exception {
         
-        SAXBuilder builder = new SAXBuilder(true);
-        Document doc = builder.build(file);
+        SAXBuilder builder = new SAXBuilder(false);
+        Document doc = builder.build(GameLoader.class.getResource(file));
         Element root = doc.getRootElement();
         
         return loadTiles(root);
     }
     
-    private static ArrayList<ArrayList<Tile>> loadTiles( Element root ) throws Exception {
-        ArrayList<ArrayList<Tile>> result = null;
+    private static TileList loadTiles( Element root ) throws Exception {
+        TileList result = new TileList();
         
-        List channels = root.getChildren();
+        List channels = root.getChildren();       
         ListIterator it2 = channels.listIterator();
         while (it2.hasNext()){
             //- Tile
             Element el = (Element)it2.next();
             
+            //- get properties
             int x = el.getAttribute("x").getIntValue();
             int y = el.getAttribute("y").getIntValue();
             boolean w = el.getAttribute("w").getBooleanValue();
-            Tile t = new Tile(new Point(x,y), w);
+            //- tile
+            Tile t = new Tile(w);
+            //- set properties
+            t.setMesh(el.getValue().trim());
             
-            //- Children
-            t.setMesh(el.getChild("Mesh").getValue());
-            
-            result.get(x).set(y, t);
+            System.out.println("added for " + x + "," + y);
+            result.put(new Coordinate(x,y), t);
          }
-
+        
         return result;
     }
     

@@ -13,17 +13,15 @@ import utils.GameProps;
 public class Tile implements Meshable {
     private final String imgPath;
     
-    private Point position;
     private BufferedImage mesh;
     
     private boolean walkable = false;
     
     
-    public Tile( Point pos, boolean walkable ) throws IOException {
+    public Tile( boolean walkable ) throws IOException {
         GameProps props = new GameProps();
-        imgPath = props.getProperty("mesh_path", "/rsc.mesh/");
+        imgPath = props.getProperty("mesh_path", "/rsc/");
         
-        setPosition(pos);
         setWalkable(walkable);
     }
     
@@ -37,28 +35,20 @@ public class Tile implements Meshable {
     }
     
     @Override
-    public void setMesh(String img) throws IOException {
-        setMesh(ImageIO.read(this.getClass().getResource(imgPath + img)));
+    public void setMesh(String img) throws Exception {
+        try {
+            setMesh(ImageIO.read(this.getClass().getResource(imgPath + img)));
+        } catch (Exception e){
+            throw new Exception("Eror while loading Tile Mesh " + imgPath + img + "\n" + e.toString());
+        }
     }
     
     protected void setWalkable( boolean w ){
         this.walkable = w;
     }
     
-    protected void setPosition( Point p) throws IllegalArgumentException {
-        if (p == null){
-            throw new IllegalArgumentException("Point for Tile can't be NULL.");
-        } else {
-            this.position = p;
-        }
-    }
-    
     public boolean getWalkable(){
         return this.walkable;
-    }
-    
-    public Point getPosition(){
-        return this.position;
     }
     
     @Override

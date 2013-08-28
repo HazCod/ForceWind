@@ -16,12 +16,17 @@ public abstract class GameObject implements Meshable {
     
     private boolean stackable = false; //Also means stackable on the ground
     private Point position = null;
+    private String name = null;
     
     private BufferedImage mesh = null;
     
-    public GameObject() throws IOException{
+    public GameObject(Point p, boolean stackable, BufferedImage mesh, String name) throws IOException {
         GameProps props = new GameProps();
         imgPath = props.getProperty("mesh_path", "/rsc.mesh/");
+        
+        setStackable(stackable);
+        setPosition(p);
+        setMesh(mesh);
     }
     
     
@@ -42,6 +47,48 @@ public abstract class GameObject implements Meshable {
     @Override
     public BufferedImage getMesh(){
         return this.mesh;
+    }
+
+    /**
+     * @return the stackable
+     */
+    public boolean isStackable() {
+        return stackable;
+    }
+
+    /**
+     * @param stackable the stackable to set
+     */
+    private void setStackable(boolean stackable) {
+        this.stackable = stackable;
+    }
+
+    /**
+     * @return the position
+     */
+    public Point getPosition() {
+        return position;
+    }
+
+    /**
+     * @param position the position to set
+     */
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
     }
     
 }

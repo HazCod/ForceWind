@@ -1,25 +1,25 @@
 package domain;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import utils.GameLoader;
 import utils.GameProps;
-
 /**
  *
  * @author Nindustries
  */
 public class GameWorld {
     
-    private ArrayList<ArrayList<Tile>> tiles;
+    private TileList tiles;
     
     public GameWorld() throws IOException, Exception {
         GameProps props = new GameProps();
         
-        loadTiles(props.getProperty("tiles_path", "/rsc/tiles.xml"));
+        loadTiles(props.getProperty("tiles_path", "/rsc/Tiles.xml"));
     }
     
-    public GameWorld( ArrayList<ArrayList<Tile>> tiles ) throws IllegalArgumentException {
+    public GameWorld( TileList tiles ) throws IllegalArgumentException {
         if (tiles == null || tiles.isEmpty()){
             throw new IllegalArgumentException("Tiles list can't be empty/NULL.");
         } else {
@@ -28,21 +28,30 @@ public class GameWorld {
     }
     
     private void loadTiles( String path ) throws Exception {
-        this.tiles = GameLoader.loadTiles(path);
+        try{
+            this.tiles = GameLoader.loadTiles(path);
+        } catch (Exception e){
+            throw new Exception("Error while loading tiles.\n" + e.toString()); //Give it some meaning
+        }
     }
     
     public GameWorld getPortion(int x, int y, int width, int height)throws IndexOutOfBoundsException {
         GameWorld result = null;
-        ArrayList<ArrayList<Tile>> temp = null;
         
-        int xmax = tiles.size();
-        int ymax = tiles.get(0).size();
+        int xmax = tiles.getMaxY();
+        int ymax = tiles.getMaxY();
         
         if (x < 0 || y < 0 || x+width > xmax || y+height > ymax){
-            throw new IndexOutOfBoundsException("WorldPortion out of index.");
+            throw new IndexOutOfBoundsException("WorldPortion out of World Range.");
         } else {
-            for (int i=0; i < height; i++){
-                temp.set(i, (ArrayList)tiles.get(i+x).subList(y, y+height)); //Nasty casting!
+            TileList sublist = new TileList();
+            Iterator it = tiles.entrySet().iterator();
+            boolean outOfRange = false;
+            while (it.hasNext() && !outOfRange) {
+                Map.Entry pairs = (Map.Entry)it.next();
+                sublist.put(pairs.getKey(), pairs.getValue());
+                //System.out.println(pairs.getKey() + " = " + pairs.getValue());
+                it.remove(); // avoids a ConcurrentModificationException
             }
         }
         
