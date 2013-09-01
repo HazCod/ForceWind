@@ -18,6 +18,8 @@ public class Loader {
             //- Start loading
             //load world
             GameWorld world = new GameWorld();
+            //load GUI
+            
             
             createMainScreen();
             //- End loading
